@@ -1,8 +1,9 @@
 #include "Map.h"
 #include <fstream>
+#include "Dot.h"
+#include "EntityManager.h"
 
-
-Map::Map(std::string name)
+Map::Map(std::string name, EntityManager* entMgr) : m_entMgr(entMgr)
 {
 	load(name);
 }
@@ -25,6 +26,10 @@ bool Map::load(std::string name)
 		
 		m_tiles[w][h] = new Tile(sf::Vector2f(w*16, h*16), buffer);
 		m_solid[w][h] = buffer == 0 ? false : true;
+		if(buffer == 0)
+		{
+			//m_entMgr->
+		}
 	}
 	
 	return true;

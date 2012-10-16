@@ -7,7 +7,7 @@ Engine::Engine()
 	
 	m_resMgr = new ResourceManager();
 	
-	m_map = new Map("map.txt");
+	m_map = new Map("map.txt", m_entMgr);
 	
 	m_entMgr = new EntityManager(m_resMgr, m_map);
 	
