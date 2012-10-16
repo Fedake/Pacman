@@ -3,6 +3,7 @@
 #include <SFML\Graphics.hpp>
 
 #include "Player.h"
+#include "Enemy.h"
 #include "Map.h"
 #include "Debug.h"
 #include "EntityManager.h"

@@ -7,11 +7,12 @@
 class Enemy : public Entity
 {
 	public:
-		Enemy(sf::Vector2f pos, Map* map);
-		//~Enemy();
+		Enemy(sf::Vector2f pos, Map* map, int type);
 		
-		//void update(int dt);
+		void update(int dt);
 		
 	private:
 		Map* m_map;
+		
+		int m_type;
 };

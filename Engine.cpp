@@ -11,6 +11,8 @@ Engine::Engine()
 	
 	m_entMgr = new EntityManager(m_resMgr, m_map);
 	
+	m_entMgr->addEnemy(16, 16, 1);
+	
 	m_dbg = new Debug();
 }
 
@@ -61,7 +63,9 @@ void Engine::draw()
 {
 	m_win->clear(sf::Color::White);
 	m_map->render(m_win);
-	m_entMgr->getPlayer()->render(m_win);
+	
+	m_entMgr->render(m_win);
+	
 	m_dbg->render(m_win);
 	m_win->display();
 }

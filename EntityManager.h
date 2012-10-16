@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "ResourceManager.h"
 #include "Map.h"
+#include "Enemy.h"
 
 class EntityManager
 {
@@ -14,6 +15,10 @@ class EntityManager
 		
 		Entity* getPlayer() { return m_entities[0]; }
 		Entity* getEntity(int nr) { if (nr < m_entities.size()) return m_entities[nr]; }
+		
+		void addEnemy(int x, int y, int type) { m_entities.push_back(new Enemy(sf::Vector2f(x, y), m_map, type)); }
+		
+		void render(sf::RenderWindow* win);
 		
 	private:
 		std::vector<Entity*> m_entities;

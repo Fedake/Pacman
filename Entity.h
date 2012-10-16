@@ -9,7 +9,7 @@ class Entity
 				
 		virtual void input(sf::Event event) {}
 		virtual void update(int dt) = 0;
-		void render(sf::RenderWindow* win){win->draw(m_spr);}
+		void render(sf::RenderWindow* win){win->draw(m_spr); win->draw(m_shape);}
 		
 		sf::Vector2f getPos(){return m_pos;}
 		sf::Vector2f getVel(){return m_vel;}
@@ -28,7 +28,7 @@ class Entity
 		sf::FloatRect m_box;
 		
 		sf::Sprite m_spr;
-		sf::RectangleShape m_spr2;
+		sf::RectangleShape m_shape;
 		
 		int m_type;
 	
