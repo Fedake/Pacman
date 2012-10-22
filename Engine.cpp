@@ -7,13 +7,13 @@ Engine::Engine()
 	
 	m_resMgr = new ResourceManager();
 	
-	m_map = new Map("map.txt", m_entMgr);
-	
+	m_map = new Map(m_entMgr);
 	m_entMgr = new EntityManager(m_resMgr, m_map);
 	
-	m_entMgr->addEnemy(16, 16, 1);
 	
 	m_dbg = new Debug();
+	
+	m_map->load("map.txt");
 }
 
 Engine::~Engine()

@@ -3,17 +3,17 @@
 
 #include "Tile.h"
 
+class Player;
+class Entity;
 class EntityManager;
-
 
 class Map
 {
 	public:
-		Map(std::string name, EntityManager* entMgr);
+		Map(EntityManager* entMgr);
 		~Map();
 		
 		bool load(std::string name);
-		
 		
 		void render(sf::RenderWindow* win);
 		

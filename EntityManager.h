@@ -17,6 +17,7 @@ class EntityManager
 		Entity* getEntity(int nr) { if (nr < m_entities.size()) return m_entities[nr]; }
 		
 		void addEnemy(int x, int y, int type) { m_entities.push_back(new Enemy(sf::Vector2f(x, y), m_map, type)); }
+		void addEntity(Entity* n){m_entities.push_back(n);}
 		
 		void render(sf::RenderWindow* win);
 		

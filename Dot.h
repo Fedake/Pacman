@@ -1,17 +1,15 @@
 #pragma once
 #include "Entity.h"
 
-class Player;
-
 class Dot : public Entity
 {
 	private:
-		Player* m_player;
+		Entity* m_player;
 		
 		
 	public:
-		Dot(sf::Vector2f pos, Player* player);
+		Dot(sf::Vector2f pos, Entity* player);
 		
-		void update(int dt);	
+		void update(int dt);
 };
 
