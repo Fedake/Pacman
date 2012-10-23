@@ -13,6 +13,8 @@ Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map
 	m_vel.y = 0;
 	m_vel.x = 30;
 	
+	m_curvnol = false;
+	
 	m_dir = E_RIGHT;
 	
 	switch (m_type)
@@ -33,7 +35,7 @@ void Enemy::checkDirection()
 	
 	
 	// sprawdz czy mobek moze skrecic
-	if (m_map->isCurve(pos.x, pos.y))
+	if (m_map->isCurve(pos.x, pos.y) && !m_curvnol)
 	{
 		if (isInside(sf::FloatRect(pos.x*16, pos.y*16, 16, 16)))
 		{
@@ -53,11 +55,27 @@ void Enemy::checkDirection()
 					} while (m_dir == E_LEFT);
 					break;
 						
+				case E_DOWN:
+					do
+					{
+						m_dir = rand() % 4;
+					} while (m_dir == E_UP);
+					break;
+					
+				case E_UP:
+					do
+					{
+						m_dir = rand() % 4;
+					} while (m_dir == E_DOWN);
+					break;
+						
 				default:
 					break;
 			}
 		}
 	}
+	
+	m_curvnol = true;
 	
 	// ustaw predkosc
 	switch (m_dir)

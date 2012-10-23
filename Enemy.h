@@ -21,4 +21,6 @@ class Enemy : public Entity
 		
 		int m_dir;
 		int m_facing;
+		
+		bool m_curvnol;
 };
