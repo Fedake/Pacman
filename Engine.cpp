@@ -1,21 +1,23 @@
 #include "Engine.h"
-
 Engine::Engine()
 {
-	m_win = new sf::RenderWindow(sf::VideoMode(32*16, 32*16, 32), "Pacman");
+	m_win = new sf::RenderWindow(sf::VideoMode(32*16, 33*16, 32), "Pacman");
 	m_win->setFramerateLimit(60);
 	
-	m_resMgr = new ResourceManager();
-	
-	m_map = new Map("map.txt");
-	
-	m_entMgr = new EntityManager(m_resMgr, m_map);
-	
-	m_entMgr->addEnemy(16, 16, 1);
-	
 	m_dbg = new Debug();
+	m_stat = new Stats();
+	
+	m_resMgr = new ResourceManager();
+	m_entMgr = new EntityManager(m_resMgr, m_stat);
+	
+	m_map = new Map(m_resMgr, m_entMgr);
+	m_entMgr->addEntity(new Player(sf::Vector2f(16, 16), m_map, m_resMgr));
 	
 	srand(time(NULL));
+	
+	m_map->load("map.txt");
+	
+	m_entMgr->addEntity(new Enemy(sf::Vector2f(16, 16), m_map, 1));
 }
 
 Engine::~Engine()
@@ -68,6 +70,7 @@ void Engine::draw()
 	
 	m_entMgr->render(m_win);
 	
+	m_stat->render(m_win);
 	m_dbg->render(m_win);
 	m_win->display();
 }

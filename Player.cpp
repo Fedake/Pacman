@@ -6,7 +6,7 @@ using namespace std;
 Player::Player(sf::Vector2f pos, Map* map, ResourceManager* resMgr) 
 			: Entity(pos, 0, 0), m_map(map)
 {
-	m_anim = new Animation(resMgr->getPlayerTex(), 16, 16, 3, 500);
+	m_anim = new Animation(resMgr->getPlayerTex(), 16, 16, 3, 100);
 	m_box.left = m_pos.x;
 	m_box.top = m_pos.y;
 	m_box.width = 15;

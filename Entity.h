@@ -20,6 +20,7 @@ class Entity
 		int getId(){return m_id;}
 		int getType(){return m_type;}
 		
+		bool shouldDie(){return m_die;}
 
 	protected:
 		int m_id;	
@@ -33,6 +34,6 @@ class Entity
 		sf::RectangleShape m_shape;
 		
 		int m_type;
-	
 		
+		bool m_die;		
 };

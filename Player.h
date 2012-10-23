@@ -13,7 +13,7 @@ class Player : public Entity
 		
 		void input(sf::Event event);
 		void update(int dt);
-				
+			
 	private:
 		Animation* m_anim;
 		
@@ -22,4 +22,6 @@ class Player : public Entity
 		
 		void checkDirection();
 		Map* m_map;
+		
+		int m_points;
 };

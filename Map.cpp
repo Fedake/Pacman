@@ -2,9 +2,13 @@
 #include <fstream>
 #include <iostream>
 
-Map::Map(std::string name)
+#include "Dot.h"
+#include "EntityManager.h"
+#include "Player.h"
+#include "Entity.h"
+
+Map::Map(ResourceManager* resMgr, EntityManager* entMgr) : m_resMgr(resMgr), m_entMgr(entMgr)
 {
-	load(name);
 }
 
 Map::~Map()
@@ -25,6 +29,10 @@ bool Map::load(std::string name)
 		
 		m_tiles[w][h] = new Tile(sf::Vector2f(w*16, h*16), buffer);
 		m_solid[w][h] = buffer;
+		if(buffer != 1)
+		{
+			m_entMgr->addEntity(new Dot(sf::Vector2f(w*16 + 7, h*16 + 7), m_resMgr, m_entMgr->getPlayer())); 
+		}
 	}
 	
 	return true;

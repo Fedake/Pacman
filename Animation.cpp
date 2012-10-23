@@ -17,7 +17,7 @@ void Animation::update()
 	{
 		m_timer.restart();
 		m_frame++;
-		if(m_frame >= m_frames) m_frame = 1;
+		if(m_frame >= m_frames) m_frame = 0;
 		m_sprite.setTextureRect(sf::IntRect(m_frame*16, m_mode*16, 16, 16));
 	}
 	
