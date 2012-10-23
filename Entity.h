@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+enum direction { E_UP, E_RIGHT, E_DOWN, E_LEFT };
+
 class Entity
 {
 	public:		

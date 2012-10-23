@@ -19,6 +19,7 @@ class EntityManager
 		void addEnemy(int x, int y, int type) { m_entities.push_back(new Enemy(sf::Vector2f(x, y), m_map, type)); }
 		
 		void render(sf::RenderWindow* win);
+		void update(int dt);
 		
 	private:
 		std::vector<Entity*> m_entities;

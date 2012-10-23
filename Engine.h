@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML\Graphics.hpp>
+#include <ctime>
 
 #include "Player.h"
 #include "Enemy.h"

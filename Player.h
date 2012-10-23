@@ -6,8 +6,6 @@
 #include "Animation.h"
 #include "ResourceManager.h"
 
-enum direction { E_UP, E_RIGHT, E_DOWN, E_LEFT };
-
 class Player : public Entity
 {
 	public:

@@ -1,6 +1,6 @@
 #include "Map.h"
 #include <fstream>
-
+#include <iostream>
 
 Map::Map(std::string name)
 {
@@ -24,7 +24,7 @@ bool Map::load(std::string name)
 		file >> buffer;
 		
 		m_tiles[w][h] = new Tile(sf::Vector2f(w*16, h*16), buffer);
-		m_solid[w][h] = buffer == 0 ? false : true;
+		m_solid[w][h] = buffer;
 	}
 	
 	return true;

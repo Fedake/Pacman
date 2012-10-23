@@ -12,3 +12,11 @@ void EntityManager::render(sf::RenderWindow* win)
 		m_entities[i]->render(win);
 	}
 }
+
+void EntityManager::update(int dt)
+{
+	for (int i = 0; i < m_entities.size(); ++i)
+	{
+		m_entities[i]->update(dt);
+	}
+}

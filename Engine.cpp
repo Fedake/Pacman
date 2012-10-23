@@ -14,6 +14,8 @@ Engine::Engine()
 	m_entMgr->addEnemy(16, 16, 1);
 	
 	m_dbg = new Debug();
+	
+	srand(time(NULL));
 }
 
 Engine::~Engine()
@@ -54,7 +56,7 @@ void Engine::handleEvents()
 
 void Engine::update(sf::Time dt)
 {
-	m_entMgr->getPlayer()->update(dt.asMicroseconds());
+	m_entMgr->update(dt.asMicroseconds());
 	
 	m_dbg->update(m_entMgr->getPlayer()->getPos());
 }
