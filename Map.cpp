@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "Entity.h"
 
-Map::Map(EntityManager* entMgr) : m_entMgr(entMgr)
+Map::Map(ResourceManager* resMgr, EntityManager* entMgr) : m_resMgr(resMgr), m_entMgr(entMgr)
 {
 }
 
@@ -27,10 +27,10 @@ bool Map::load(std::string name)
 		
 		m_tiles[w][h] = new Tile(sf::Vector2f(w*16, h*16), buffer);
 		m_solid[w][h] = buffer == 0 ? false : true;
-		//if(buffer == 0)
-		//{
-		//	m_entMgr->addEntity(new Dot(sf::Vector2f(w*32, h*32), player)); 
-		//}
+		if(buffer == 0)
+		{
+			m_entMgr->addEntity(new Dot(sf::Vector2f(w*16 + 7, h*16 + 7), m_resMgr, m_entMgr->getPlayer())); 
+		}
 	}
 	
 	return true;

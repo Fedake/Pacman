@@ -7,6 +7,7 @@
 #include "Map.h"
 #include "Debug.h"
 #include "EntityManager.h"
+#include "Stats.h"
 
 class Engine
 {
@@ -23,6 +24,7 @@ class Engine
 		
 		Map* m_map;
 		Debug* m_dbg;
+		Stats* m_stat;
 		
 		EntityManager* m_entMgr;
 		

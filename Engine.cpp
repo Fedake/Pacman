@@ -1,17 +1,17 @@
 #include "Engine.h"
-
 Engine::Engine()
 {
-	m_win = new sf::RenderWindow(sf::VideoMode(32*16, 32*16, 32), "Pacman");
+	m_win = new sf::RenderWindow(sf::VideoMode(32*16, 33*16, 32), "Pacman");
 	m_win->setFramerateLimit(60);
 	
-	m_resMgr = new ResourceManager();
-	
-	m_map = new Map(m_entMgr);
-	m_entMgr = new EntityManager(m_resMgr, m_map);
-	
-	
 	m_dbg = new Debug();
+	m_stat = new Stats();
+	
+	m_resMgr = new ResourceManager();
+	m_entMgr = new EntityManager(m_resMgr, m_stat);
+	
+	m_map = new Map(m_resMgr, m_entMgr);
+	m_entMgr->addEntity(new Player(sf::Vector2f(16, 16), m_map, m_resMgr));
 	
 	m_map->load("map.txt");
 }
@@ -55,7 +55,7 @@ void Engine::handleEvents()
 void Engine::update(sf::Time dt)
 {
 	m_entMgr->getPlayer()->update(dt.asMicroseconds());
-	
+	m_entMgr->update(dt.asMicroseconds());
 	m_dbg->update(m_entMgr->getPlayer()->getPos());
 }
 
@@ -66,6 +66,7 @@ void Engine::draw()
 	
 	m_entMgr->render(m_win);
 	
+	m_stat->render(m_win);
 	m_dbg->render(m_win);
 	m_win->display();
 }
