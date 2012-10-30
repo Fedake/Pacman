@@ -42,78 +42,86 @@ void Player::checkDirection()
 	pos.x = static_cast<int>((m_pos.x+8) / 16);
 	pos.y = static_cast<int>((m_pos.y+8) / 16);
 	
-	bool canGo = true;
+	int cc = 0;
+	int lc = 0;
 	
-	if (m_dir == E_UP)
+	for (int h = pos.y - 1; h <= pos.y + 1; ++h)
+	for (int w = pos.x - 1; w <= pos.x + 1; ++w)
 	{
-		sf::FloatRect box;
-		box.left = m_pos.x;
-		box.top = m_pos.y-15;
-		box.width = 15;
-		box.height = 15;
-		
-		if (m_map->isSolid(pos.x, pos.y-1) && box.intersects(sf::FloatRect(pos.x*16, (pos.y-1)*16, 16, 16))) canGo = false;
-		
-		if (canGo)
+		if (m_dir == E_UP)
 		{
-			m_vel.x = 0;
-			m_vel.y = -50;
-			m_facing = E_UP;
-			std::cout << "E_UP" << std::endl;
+			sf::FloatRect box;
+			box.left = m_pos.x;
+			box.top = m_pos.y-15;
+			box.width = 15;
+			box.height = 15;
+			
+			++lc;
+			if (m_map->isSolid(w, h) && box.intersects(sf::FloatRect(w*16, h*16, 16, 16))) ++cc;
+			
+			if (lc == 9 && cc == 0)
+			{
+				m_vel.x = 0;
+				m_vel.y = -50;
+				m_facing = E_UP;
+			}
 		}
-	}
-	
-	if (m_dir == E_DOWN)
-	{
-		sf::FloatRect box;
-		box.left = m_pos.x;
-		box.top = m_pos.y+15;
-		box.width = 15;
-		box.height = 15;
 		
-		if (m_map->isSolid(pos.x, pos.y+1) && box.intersects(sf::FloatRect(pos.x*16, (pos.y+1)*16, 16, 16))) canGo = false;
-		
-		if (canGo)
+		if (m_dir == E_DOWN)
 		{
-			m_vel.x = 0;
-			m_vel.y = 50;
-			m_facing = E_DOWN;
+			sf::FloatRect box;
+			box.left = m_pos.x;
+			box.top = m_pos.y+15;
+			box.width = 15;
+			box.height = 15;
+			
+			++lc;
+			if (m_map->isSolid(w, h) && box.intersects(sf::FloatRect(w*16, h*16, 16, 16))) ++cc;
+			
+			if (lc == 9 && cc == 0)
+			{
+				m_vel.x = 0;
+				m_vel.y = 50;
+				m_facing = E_DOWN;
+			}
 		}
-	}
-	
-	if (m_dir == E_LEFT)
-	{
-		sf::FloatRect box;
-		box.left = m_pos.x-15;
-		box.top = m_pos.y;
-		box.width = 15;
-		box.height = 15;
 		
-		if (m_map->isSolid(pos.x-1, pos.y) && box.intersects(sf::FloatRect((pos.x-1)*16, pos.y*16, 16, 16))) canGo = false;
-		
-		if (canGo)
+		if (m_dir == E_LEFT)
 		{
-			m_vel.x = -50;
-			m_vel.y = 0;
-			m_facing = E_LEFT;
+			sf::FloatRect box;
+			box.left = m_pos.x-15;
+			box.top = m_pos.y;
+			box.width = 15;
+			box.height = 15;
+			
+			++lc;
+			if (m_map->isSolid(w, h) && box.intersects(sf::FloatRect(w*16, h*16, 16, 16))) ++cc;
+			
+			if (lc == 9 && cc == 0)
+			{
+				m_vel.x = -50;
+				m_vel.y = 0;
+				m_facing = E_LEFT;
+			}
 		}
-	}
-	
-	if (m_dir == E_RIGHT)
-	{
-		sf::FloatRect box;
-		box.left = m_pos.x+15;
-		box.top = m_pos.y;
-		box.width = 15;
-		box.height = 15;
 		
-		if (m_map->isSolid(pos.x+1, pos.y) && box.intersects(sf::FloatRect((pos.x+1)*16, pos.y*16, 16, 16))) canGo = false;
-		
-		if (canGo)
+		if (m_dir == E_RIGHT)
 		{
-			m_vel.x = 50;
-			m_vel.y = 0;
-			m_facing = E_RIGHT;
+			sf::FloatRect box;
+			box.left = m_pos.x+15;
+			box.top = m_pos.y;
+			box.width = 15;
+			box.height = 15;
+			
+			++lc;
+			if (m_map->isSolid(w, h) && box.intersects(sf::FloatRect(w*16, h*16, 16, 16))) ++cc;
+			
+			if (lc == 9 && cc == 0)
+			{
+				m_vel.x = 50;
+				m_vel.y = 0;
+				m_facing = E_RIGHT;
+			}
 		}
 	}
 }
@@ -131,8 +139,8 @@ void Player::update(int dt)
 		{
 			if (m_box.intersects(sf::FloatRect(w*16, h*16, 16, 16)))
 			{
-				//std::cout << "kolX" << std::endl;
-				switch (m_dir)
+				std::cout << "kolX" << std::endl;
+				switch (m_facing)
 				{
 					case E_LEFT:
 						m_pos.x = w*16+16;
@@ -157,8 +165,8 @@ void Player::update(int dt)
 		{
 			if (m_box.intersects(sf::FloatRect(w*16, h*16, 16, 16)))
 			{
-				//std::cout << "kolY" << std::endl;
-				switch (m_dir)
+				std::cout << "kolY" << std::endl;
+				switch (m_facing)
 				{
 					case E_UP:
 						m_pos.y = h*16+16;
