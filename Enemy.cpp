@@ -13,7 +13,9 @@ Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, type, 93), m_ma
 	m_vel.y = 0;
 	m_vel.x = 30;
 	
-	m_curvnol = false;
+	m_turned = false;
+	
+	m_turnTime.restart();
 	
 	m_dir = E_RIGHT;
 	
@@ -30,43 +32,55 @@ Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, type, 93), m_ma
 void Enemy::checkDirection()
 {
 	sf::Vector2i pos;
-	pos.x = static_cast<int>(m_pos.x / 16);
-	pos.y = static_cast<int>(m_pos.y / 16);
-	
-	
+	pos.x = static_cast<int>((m_pos.x+8) / 16);
+	pos.y = static_cast<int>((m_pos.y+8) / 16);
 	// sprawdz czy mobek moze skrecic
-	if (m_map->isCurve(pos.x, pos.y) && !m_curvnol)
+	if (m_map->isTurn(pos.x, pos.y) && m_turnTime.getElapsedTime().asMilliseconds() > 500)
 	{
-		if (isInside(sf::FloatRect(pos.x*16, pos.y*16, 16, 16)))
+		if (isInside(sf::FloatRect(pos.x*16, pos.y*16, 17, 17)))
 		{
+			bool wayClear = false;
+			
 			switch (m_dir)
 			{
 				case E_LEFT:
 					do
 					{
 						m_dir = rand() % 4;
-					} while (m_dir == E_RIGHT);
+						if (isWayClear()) wayClear = true;
+						else wayClear = false;
+					} while (m_dir == E_RIGHT || !wayClear);
+					m_turnTime.restart();
 					break;
 					
 				case E_RIGHT:
 					do
 					{
 						m_dir = rand() % 4;
-					} while (m_dir == E_LEFT);
+						if (isWayClear()) wayClear = true;
+						else wayClear = false;
+					} while (m_dir == E_LEFT || !wayClear);
+					m_turnTime.restart();
 					break;
 						
 				case E_DOWN:
 					do
 					{
 						m_dir = rand() % 4;
-					} while (m_dir == E_UP);
+						if (isWayClear()) wayClear = true;
+						else wayClear = false;
+					} while (m_dir == E_UP || !wayClear);
+					m_turnTime.restart();
 					break;
 					
 				case E_UP:
 					do
 					{
 						m_dir = rand() % 4;
-					} while (m_dir == E_DOWN);
+						if (isWayClear()) wayClear = true;
+						else wayClear = false;
+					} while (m_dir == E_DOWN || !wayClear);
+					m_turnTime.restart();
 					break;
 						
 				default:
@@ -74,8 +88,6 @@ void Enemy::checkDirection()
 			}
 		}
 	}
-	
-	m_curvnol = true;
 	
 	// ustaw predkosc
 	switch (m_dir)
@@ -114,8 +126,17 @@ void Enemy::update(int dt)
 		{
 			if (m_box.intersects(sf::FloatRect(w*16, h*16, 16, 16)))
 			{
-				m_pos.x -= m_vel.x * (dt/1000000.f);
-				m_box.left = m_pos.x;
+				switch (m_dir)
+				{
+					case E_LEFT:
+						m_pos.x = w*16+16;
+						m_box.left = w*16+16;
+						break;
+					case E_RIGHT:
+						m_pos.x = w*16-m_box.width;
+						m_box.left = w*16-m_box.width;
+						break;
+				}
 				m_vel.x = 0;
 			}
 		}
@@ -130,8 +151,17 @@ void Enemy::update(int dt)
 		{
 			if (m_box.intersects(sf::FloatRect(w*16, h*16, 16, 16)))
 			{
-				m_pos.y -= m_vel.y * (dt/1000000.f);
-				m_box.top = m_pos.y;
+				switch (m_dir)
+				{
+					case E_UP:
+						m_pos.y = h*16+16;
+						m_box.top = h*16+16;
+						break;
+					case E_DOWN:
+						m_pos.y = h*16-m_box.height;
+						m_box.top = h*16-m_box.height;
+						break;
+				}
 				m_vel.y = 0;
 			}
 		}
@@ -145,12 +175,37 @@ bool Enemy::isInside(sf::FloatRect tile)
 	// tutaj Lesiek przypomjal co mam robic
 	if (m_box.intersects(tile))
 	{
-		if (m_box.left >= tile.left)
-		if (m_box.top >= tile.top)
-		if ((m_box.left+m_box.width) <= (tile.left+tile.width))
-		if ((m_box.top+m_box.height) <= (tile.left+tile.height))
+		if ((m_box.left >= tile.left)
+		&& (m_box.top >= tile.top)
+		&& ((m_box.left+m_box.width) <= (tile.left+tile.width))
+		&& ((m_box.top+m_box.height) <= (tile.left+tile.height)))
 		return true;
 	}
 	
 	 return false;
+}
+
+bool Enemy::isWayClear()
+{
+	sf::Vector2i pos;
+	pos.x = static_cast<int>((m_pos.x+8) / 16);
+	pos.y = static_cast<int>((m_pos.y+8) / 16);
+	
+	switch (m_dir)
+	{
+		case E_LEFT:
+			if (m_map->isSolid(pos.x-1, pos.y)) return false;
+			break;
+		case E_RIGHT:
+			if (m_map->isSolid(pos.x+1, pos.y)) return false;
+			break;
+		case E_UP:
+			if (m_map->isSolid(pos.x, pos.y-1)) return false;
+			break;
+		case E_DOWN:
+			if (m_map->isSolid(pos.x, pos.y+1)) return false;
+			break;
+	}
+	
+	return true;
 }
