@@ -21,11 +21,8 @@ class Engine
 	private:
 		sf::RenderWindow* m_win;
 		
-		ResourceManager* m_resMgr;
-		
 		Map* m_map;
 		Debug* m_dbg;
-		Stats* m_stat;
 		
 		EntityManager* m_entMgr;
 		

@@ -1,12 +1,12 @@
 #include "Player.h"
 #include <iostream>
+#include "EntityManager.h"
 
 using namespace std;
 
-Player::Player(sf::Vector2f pos, Map* map, ResourceManager* resMgr) 
-			: Entity(pos, 0, 0), m_map(map)
+Player::Player(sf::Vector2f pos, Map* map, EntityManager* entMgr) : Entity(pos, 0, 0), m_map(map), m_entMgr(entMgr)
 {
-	m_anim = new Animation(resMgr->getPlayerTex(), 16, 16, 3, 100);
+	m_anim = new Animation(ResourceManager::get()->getPlayerTex(), 16, 16, 3, 100);
 	m_box.left = m_pos.x;
 	m_box.top = m_pos.y;
 	m_box.width = 15;
@@ -189,6 +189,27 @@ void Player::update(int dt)
 	m_spr.setOrigin(8, 8);
 	m_spr.setRotation((m_facing+1)*90);
 	m_spr.setPosition(m_pos + sf::Vector2f(8, 8));
+	
+	for(unsigned i = 0; i < m_entMgr->getSize(); i++)
+	{
+		if(m_entMgr->getEntity(i)->getType() == 93)
+		{
+			if(m_entMgr->getEntity(i)->getBox().intersects(m_box))
+			{
+				kill();
+			}
+		}
+	}
 }
 
+void Player::kill()
+{
+	Stats::get()->addLives(-1);
+	
+	m_pos = sf::Vector2f(16, 16);
+	m_box.left = m_pos.x;
+	m_box.top = m_pos.y;
+	m_box.width = 15;
+	m_box.height = 15;
+}
 

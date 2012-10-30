@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 
-EntityManager::EntityManager(ResourceManager* resMgr, Stats* stat) : m_resMgr(resMgr), m_stat(stat)
+EntityManager::EntityManager()
 {
 }
 
@@ -13,7 +13,6 @@ void EntityManager::update(int dt)
 		if(m_entities[i]->shouldDie())
 		{
 			m_entities.erase(m_entities.begin() + i);
-			m_stat->addPoints(10);
 			i--;
 		}
 	}	

@@ -7,7 +7,7 @@
 #include "Player.h"
 #include "Entity.h"
 
-Map::Map(ResourceManager* resMgr, EntityManager* entMgr) : m_resMgr(resMgr), m_entMgr(entMgr)
+Map::Map(EntityManager* entMgr) : m_entMgr(entMgr)
 {
 }
 
@@ -31,9 +31,11 @@ bool Map::load(std::string name)
 		m_solid[w][h] = buffer;
 		if(buffer != 1)
 		{
-			m_entMgr->addEntity(new Dot(sf::Vector2f(w*16 + 7, h*16 + 7), m_resMgr, m_entMgr->getPlayer())); 
+			m_entMgr->addEntity(new Dot(sf::Vector2f(w*16 + 7, h*16 + 7), m_entMgr->getPlayer())); 
 		}
 	}
+	
+	
 	
 	return true;
 }

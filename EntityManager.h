@@ -12,12 +12,11 @@
 class EntityManager
 {
 	public:
-		EntityManager(ResourceManager* resMgr, Stats* stat);
+		EntityManager();
 		
 		Entity* getPlayer() { return m_entities[0]; }
 		Entity* getEntity(int nr) { if (nr < m_entities.size()) return m_entities[nr]; }
-		
-		//void addEnemy(int x, int y, int type) { m_entities.push_back(new Enemy(sf::Vector2f(x, y), m_map, type)); }
+		unsigned getSize(){return m_entities.size();}
 		void addEntity(Entity* n){m_entities.push_back(n);}
 		
 		void render(sf::RenderWindow* win);
@@ -25,7 +24,4 @@ class EntityManager
 		
 	private:
 		std::vector<Entity*> m_entities;
-		
-		ResourceManager* m_resMgr;
-		Stats* m_stat;
 };
