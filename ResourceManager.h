@@ -6,15 +6,18 @@
 class ResourceManager
 {
 	public:
-		ResourceManager();
 		sf::Texture* getPlayerTex(){return m_playerTex;}
 		sf::Texture* getEntityTex(int n){return m_entTex[n];}
+		
+		static ResourceManager* get();
 		
 		
 		
 	private:
-		sf::Texture* m_playerTex;
+		ResourceManager();
+		static ResourceManager* m_instance;
 		
+		sf::Texture* m_playerTex;
 		std::vector<sf::Texture*> m_entTex;
 		
 		

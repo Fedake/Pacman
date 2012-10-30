@@ -16,7 +16,8 @@ class Enemy : public Entity
 		bool isInside(sf::FloatRect tile);
 		
 	private:
-		Map* m_map;		
+		Map* m_map;
+		
 		int m_type;
 		
 		int m_dir;

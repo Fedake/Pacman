@@ -3,7 +3,7 @@
 #include <iostream>
 #include <windows.h>
 
-Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map(map)
+Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, type, 93), m_map(map)
 {
 	m_box.left = pos.x;
 	m_box.top = pos.y;

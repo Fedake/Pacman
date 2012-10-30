@@ -11,7 +11,7 @@ class EntityManager;
 class Map
 {
 	public:
-		Map(ResourceManager* resMgr, EntityManager* entMgr);
+		Map(EntityManager* entMgr);
 		~Map();
 		
 		bool load(std::string name);
