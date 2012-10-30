@@ -15,6 +15,8 @@ class Enemy : public Entity
 		
 		bool isInside(sf::FloatRect tile);
 		
+		bool isWayClear();
+		
 	private:
 		Map* m_map;		
 		int m_type;
@@ -22,5 +24,7 @@ class Enemy : public Entity
 		int m_dir;
 		int m_facing;
 		
-		bool m_curvnol;
+		bool m_turned;
+		
+		sf::Clock m_turnTime;
 };

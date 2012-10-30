@@ -19,7 +19,7 @@ class Map
 		void render(sf::RenderWindow* win);
 		
 		bool isSolid(int x, int y) { return m_solid[x][y] == 1 ? true : false; }
-		bool isCurve(int x, int y) { return m_solid[x][y] == 2 ? true : false; }
+		bool isTurn(int x, int y) { return m_solid[x][y] == 2 ? true : false; }
 		
 	private:
 		ResourceManager* m_resMgr;
