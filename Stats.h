@@ -8,7 +8,8 @@ class Stats
 		
 		void addPoints(int x){m_points += x;}
 		void addLives(int x){m_lives += x;}
-		int getPoints(){return m_points;}	
+		int getPoints(){return m_points;}
+		int getLives(){return m_lives;}	
 		
 		static Stats* get();
 		
@@ -18,6 +19,7 @@ class Stats
 		
 		sf::Sprite m_lifeSpr[3];
 		sf::Text m_pointsText;
+		sf::Text m_livesText;
 		
 		int m_points;
 		int m_lives;	

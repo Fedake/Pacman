@@ -29,4 +29,6 @@ class Engine
 		void handleEvents();
 		void draw();
 		void update(sf::Time dt);
+		
+		bool m_exit;
 };
