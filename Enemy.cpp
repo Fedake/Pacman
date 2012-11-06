@@ -3,7 +3,7 @@
 #include <iostream>
 #include <windows.h>
 
-Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, type, 93), m_map(map)
+Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map(map)
 {
 	m_box.left = pos.x;
 	m_box.top = pos.y;
@@ -31,6 +31,9 @@ Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, type, 93), m_ma
 
 void Enemy::checkDirection()
 {
+	if (m_onWay);
+	
+	
 	sf::Vector2i pos;
 	pos.x = static_cast<int>((m_pos.x+8) / 16);
 	pos.y = static_cast<int>((m_pos.y+8) / 16);
@@ -111,6 +114,7 @@ void Enemy::checkDirection()
 		default:
 			break;
 	}
+	
 }
 
 void Enemy::update(int dt)
@@ -175,10 +179,10 @@ bool Enemy::isInside(sf::FloatRect tile)
 	// tutaj Lesiek przypomjal co mam robic
 	if (m_box.intersects(tile))
 	{
-		if ((m_box.left >= tile.left)
-		&& (m_box.top >= tile.top)
-		&& ((m_box.left+m_box.width) <= (tile.left+tile.width))
-		&& ((m_box.top+m_box.height) <= (tile.left+tile.height)))
+		if ((m_box.left >= tile.left) &&
+		   (m_box.top >= tile.top) &&
+		   ((m_box.left+m_box.width) <= (tile.left+tile.width)) &&
+		   ((m_box.top+m_box.height) <= (tile.left+tile.height)))
 		return true;
 	}
 	
@@ -208,4 +212,37 @@ bool Enemy::isWayClear()
 	}
 	
 	return true;
+}
+
+bool Enemy::aStar()
+{
+	// choose a random available destination
+	sf::Vector2i dest;
+	
+	do
+	{
+		dest.x = rand() % 32;
+		dest.y = rand() % 32;
+	} while (m_map->isSolid(dest.x, dest.y));
+	
+	sf::Vector2i pos;
+	pos.x = static_cast<int>((m_pos.x+8) / 16);
+	pos.y = static_cast<int>((m_pos.y+8) / 16);
+	
+	// add current square
+	m_openList.push_back(Square(sf::Vector2f(pos.x, pos.y)));
+	
+	// add all reachable squares and set current square as parent
+	for (int h = pos.y-1; h < pos.y+1; ++h)
+	for (int w = pos.x-1; w < pos.x+1; ++w)
+	{
+		if (w == pos.x && h == pos.y) continue;
+		
+		m_openList.push_back(Square(sf::Vector2f(w, h), sf::Vector2f(pos.x, pos.y)));
+	}
+	
+	for (int i = 0; i < m_openList.size(); ++i)
+	{
+		float Gx = m_openList[i].getPos().x;
+	}
 }

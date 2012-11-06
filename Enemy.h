@@ -3,6 +3,21 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.h"
 #include "Map.h"
+#include <vector>
+
+class Square
+{
+	private:
+		sf::Vector2f m_pos;	
+		sf::Vector2f m_parentSquare;
+		
+	public:
+		Square(sf::Vector2f pos) : m_pos(pos) { }
+		Square(sf::Vector2f pos, sf::Vector2f parentSquare) 
+				: m_pos(pos), m_parentSquare(parentSquare) { }
+				
+		sf::Vector2f getPos() { return m_pos; }
+};
 
 class Enemy : public Entity
 {
@@ -17,6 +32,8 @@ class Enemy : public Entity
 		
 		bool isWayClear();
 		
+		bool aStar();
+		
 	private:
 		Map* m_map;
 		
@@ -28,4 +45,8 @@ class Enemy : public Entity
 		bool m_turned;
 		
 		sf::Clock m_turnTime;
+		
+		std::vector<Square> m_openList;
+		
+		bool m_onWay;
 };
