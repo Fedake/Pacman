@@ -17,7 +17,7 @@ Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map
 	
 	m_turnTime.restart();
 	
-	m_dir = E_RIGHT;
+	m_onWay = false;
 	
 	switch (m_type)
 	{
@@ -31,13 +31,18 @@ Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map
 
 void Enemy::checkDirection()
 {
-	if (m_onWay);
+	if (m_pos == m_dest)
+		m_onWay = false;
+		
+	if (!m_onWay) setNewDest();
 	
+	aStar();
 	
+	/*
 	sf::Vector2i pos;
 	pos.x = static_cast<int>((m_pos.x+8) / 16);
 	pos.y = static_cast<int>((m_pos.y+8) / 16);
-	// sprawdz czy mobek moze skrecic
+	// check if enemy can turn
 	if (m_map->isTurn(pos.x, pos.y) && m_turnTime.getElapsedTime().asMilliseconds() > 500)
 	{
 		if (isInside(sf::FloatRect(pos.x*16, pos.y*16, 17, 17)))
@@ -91,8 +96,9 @@ void Enemy::checkDirection()
 			}
 		}
 	}
+	*/
 	
-	// ustaw predkosc
+	// set velocity
 	switch (m_dir)
 	{
 		case E_LEFT:
@@ -114,7 +120,6 @@ void Enemy::checkDirection()
 		default:
 			break;
 	}
-	
 }
 
 void Enemy::update(int dt)
@@ -214,35 +219,80 @@ bool Enemy::isWayClear()
 	return true;
 }
 
-bool Enemy::aStar()
+void Enemy::setNewDest()
 {
 	// choose a random available destination
-	sf::Vector2i dest;
-	
 	do
 	{
-		dest.x = rand() % 32;
-		dest.y = rand() % 32;
-	} while (m_map->isSolid(dest.x, dest.y));
+		m_dest.x = rand() % 32;
+		m_dest.y = rand() % 32;
+	} while (m_map->isSolid(m_dest.x, m_dest.y));
 	
+	m_onWay = true;
+}
+
+void Enemy::aStar()
+{
+	// get current position
 	sf::Vector2i pos;
 	pos.x = static_cast<int>((m_pos.x+8) / 16);
 	pos.y = static_cast<int>((m_pos.y+8) / 16);
 	
 	// add current square
-	m_openList.push_back(Square(sf::Vector2f(pos.x, pos.y)));
+	//m_openList.push_back(Square(pos));
 	
-	// add all reachable squares and set current square as parent
-	for (int h = pos.y-1; h < pos.y+1; ++h)
-	for (int w = pos.x-1; w < pos.x+1; ++w)
+	if (isInside(sf::FloatRect(pos.x, pos.y, 16, 16)));
 	{
-		if (w == pos.x && h == pos.y) continue;
+		// add all reachable squares and set current square as parent
+		if (!m_map->isSolid(pos.x-1, pos.y))
+			m_openList.push_back(Square(sf::Vector2i(pos.x-1, pos.y), pos));
+			
+		if (!m_map->isSolid(pos.x+1, pos.y))	
+		m_openList.push_back(Square(sf::Vector2i(pos.x+1, pos.y), pos));
 		
-		m_openList.push_back(Square(sf::Vector2f(w, h), sf::Vector2f(pos.x, pos.y)));
-	}
-	
-	for (int i = 0; i < m_openList.size(); ++i)
-	{
-		float Gx = m_openList[i].getPos().x;
+		if (!m_map->isSolid(pos.x, pos.y-1))
+		m_openList.push_back(Square(sf::Vector2i(pos.x, pos.y-1), pos));
+		
+		if (!m_map->isSolid(pos.x, pos.y+1))
+		m_openList.push_back(Square(sf::Vector2i(pos.x, pos.y+1), pos));
+		
+		sf::Vector2i nextSquare;
+		
+		int prevCost = 9999;
+		
+		for (int i = 0; i < m_openList.size(); ++i)
+		{
+			// cost to move from current to the next square
+			int G = 10;
+			
+			// cost to move from current square to final destination
+			int H = abs(pos.x - m_dest.x) * 10 + abs(pos.y - m_dest.y) * 10;
+			
+			int cost = G + H;
+			
+			if (cost < prevCost)
+			{
+				nextSquare = m_openList[i].getPos();
+				m_ntdest.x = nextSquare.x;
+				m_ntdest.y = nextSquare.x;
+				
+				prevCost = cost;
+			}
+		}
+		if (pos.x - nextSquare.x < 0)
+			m_dir = E_RIGHT;
+		else if (pos.x - nextSquare.x > 0)
+			m_dir = E_LEFT;
+		if (pos.y - nextSquare.y < 0)
+			m_dir = E_DOWN;
+		else if (pos.y - nextSquare.y > 0)
+			m_dir = E_UP;
+			
+		m_gTnT = true;
+		
+		std::cout << "x: " << pos.x - nextSquare.x << "  y: " << pos.y - nextSquare.y;
+		std::cout << "  m_dir: " << m_dir << std::endl;
+			
+		m_openList.clear();
 	}
 }
