@@ -5,6 +5,9 @@
 
 Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map(map)
 {
+	m_anim = new Animation(ResourceManager::get()->getPlayerTex(), 16, 16, 3, 100);
+	m_anim->play();
+	
 	m_box.left = pos.x;
 	m_box.top = pos.y;
 	m_box.width = 15;
@@ -19,14 +22,6 @@ Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map
 	
 	m_dir = E_RIGHT;
 	
-	switch (m_type)
-	{
-		case 1:
-		default:
-			m_shape.setPosition(sf::Vector2f(m_box.left, m_box.top));
-			m_shape.setSize(sf::Vector2f(m_box.width, m_box.height));
-			m_shape.setFillColor(sf::Color::Green);
-	}
 }
 
 void Enemy::checkDirection()
@@ -171,7 +166,8 @@ void Enemy::update(int dt)
 		}
 	}
 	
-	m_shape.setPosition(sf::Vector2f(m_box.left, m_box.top));
+	m_spr = m_anim->getSprite();
+	m_spr.setPosition(sf::Vector2f(m_box.left, m_box.top));
 }
 
 bool Enemy::isInside(sf::FloatRect tile)

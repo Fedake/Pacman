@@ -42,7 +42,6 @@ void Player::checkDirection()
 	tPos.x = static_cast<int>((m_pos.x+8) / 16);
 	tPos.y = static_cast<int>((m_pos.y+8) / 16);
 	
-	
 	int cc = 0;
 	int lc = 0;
 	
