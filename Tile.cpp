@@ -1,17 +1,16 @@
 #include "Tile.h"
-
+#include "ResourceManager.h"
 
 
 Tile::Tile(sf::Vector2f pos, int type)
 {
-	m_shape.setSize(sf::Vector2f(16, 16));
-	m_shape.setPosition(pos);
+	m_spr.setPosition(pos);
 	
 	switch (type)
 	{
 		case 1:
-			m_shape.setFillColor(sf::Color::Red); break;
+			m_spr.setTexture(*ResourceManager::get()->getEntityTex(1)); break;
 		default:
-			m_shape.setFillColor(sf::Color::Black); break;
+			break;
 	}
 }

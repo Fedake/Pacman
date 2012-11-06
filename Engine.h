@@ -10,6 +10,8 @@
 #include "EntityManager.h"
 #include "Stats.h"
 
+#define FPSCAP 1000
+
 class Engine
 {
 	public:
@@ -26,7 +28,10 @@ class Engine
 		
 		EntityManager* m_entMgr;
 		
+		
 		void handleEvents();
 		void draw();
 		void update(sf::Time dt);
+		
+		bool m_exit;
 };

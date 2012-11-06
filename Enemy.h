@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Map.h"
 #include <vector>
+#include "Animation.h"
 
 class Square
 {
@@ -38,6 +39,7 @@ class Enemy : public Entity
 		
 	private:
 		Map* m_map;
+		Animation* m_anim;
 		
 		int m_type;
 		

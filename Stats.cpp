@@ -11,7 +11,12 @@ Stats::Stats() : m_points(0), m_lives(3)
 	m_pointsText.setCharacterSize(16);
 	m_pointsText.setColor(sf::Color::White);
 	
-	for(int i = 0; i < 3; i++)
+	m_livesText.setPosition(150, 32*16);
+	m_livesText.setCharacterSize(16);
+	m_livesText.setColor(sf::Color::White);
+	m_livesText.setString("Lives: ");
+	
+	for(int i = 0; i < m_lives; i++)
 	{
 		m_lifeSpr[i].setTexture(*ResourceManager::get()->getPlayerTex());
 		m_lifeSpr[i].setTextureRect(sf::IntRect(32, 0, 16, 16));
@@ -27,6 +32,7 @@ void Stats::render(sf::RenderWindow* win)
 	m_pointsText.setString(s.str());
 	
 	win->draw(m_pointsText);
+	win->draw(m_livesText);
 	for(int i = 0; i < m_lives; i++) win->draw(m_lifeSpr[i]);
 }
 

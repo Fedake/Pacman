@@ -8,9 +8,9 @@ class Tile
 	public:
 		Tile(sf::Vector2f pos, int type);
 		
-		void render(sf::RenderWindow* win){win->draw(m_shape);}
+		void render(sf::RenderWindow* win){win->draw(m_spr);}
 	private:
-		sf::RectangleShape m_shape;
+		sf::Sprite m_spr;
 };
 
 #endif
