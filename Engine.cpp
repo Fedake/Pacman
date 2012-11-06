@@ -29,13 +29,20 @@ Engine::~Engine()
 void Engine::run()
 {
 	sf::Clock dt;
-		
+	sf::Clock fps;
+	
 	while (m_win->isOpen() && !m_exit)
 	{
+		fps.restart();
 		handleEvents();
 		update(dt.getElapsedTime());
 		dt.restart();
 		draw();
+		
+		if(fps.getElapsedTime().asMilliseconds() < 1000.f/FPSCAP)
+		{
+			sf::sleep(sf::milliseconds(1000.f/FPSCAP - fps.getElapsedTime().asMilliseconds()));
+		}
 	}
 }
 
@@ -62,7 +69,7 @@ void Engine::update(sf::Time dt)
 	m_entMgr->update(dt.asMicroseconds());
 	
 	if(Stats::get()->getLives() < 0) m_exit = true;
-	m_dbg->update(m_entMgr->getPlayer()->getPos());
+	m_dbg->update(dt.asMilliseconds(), m_entMgr->getPlayer()->getPos());
 }
 
 void Engine::draw()

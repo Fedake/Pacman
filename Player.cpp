@@ -38,15 +38,16 @@ void Player::input(sf::Event ev)
 
 void Player::checkDirection()
 {
-	sf::Vector2i pos;
-	pos.x = static_cast<int>((m_pos.x+8) / 16);
-	pos.y = static_cast<int>((m_pos.y+8) / 16);
+	sf::Vector2i tPos;
+	tPos.x = static_cast<int>((m_pos.x+8) / 16);
+	tPos.y = static_cast<int>((m_pos.y+8) / 16);
+	
 	
 	int cc = 0;
 	int lc = 0;
 	
-	for (int h = pos.y - 1; h <= pos.y + 1; ++h)
-	for (int w = pos.x - 1; w <= pos.x + 1; ++w)
+	for (int h = tPos.y - 1; h <= tPos.y + 1; ++h)
+	for (int w = tPos.x - 1; w <= tPos.x + 1; ++w)
 	{
 		if (m_dir == E_UP)
 		{
@@ -131,6 +132,7 @@ void Player::update(int dt)
 	checkDirection();
 	
 	m_pos.x += m_vel.x * (dt/1000000.f);
+	std::cout << m_vel.x * (dt/1000000.f) << std::endl;
 	m_box.left = m_pos.x;
 	for (int h = 0; h < 32; ++h)
 	for (int w = 0; w < 32; ++w)

@@ -8,6 +8,9 @@ ResourceManager::ResourceManager()
 	
 	m_entTex.push_back(new sf::Texture());
 	m_entTex[0]->loadFromFile("dot.png");
+	
+	m_entTex.push_back(new sf::Texture());
+	m_entTex[1]->loadFromFile("sciana.png");
 }
 
 ResourceManager* ResourceManager::get()
