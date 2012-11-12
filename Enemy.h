@@ -6,20 +6,6 @@
 #include <vector>
 #include "Animation.h"
 
-class Square
-{
-	private:
-		sf::Vector2i m_pos;	
-		sf::Vector2i m_parentSquare;
-		
-	public:
-		Square(sf::Vector2i pos) : m_pos(pos) { }
-		Square(sf::Vector2i pos, sf::Vector2i parentSquare) 
-				: m_pos(pos), m_parentSquare(parentSquare) { }
-				
-		sf::Vector2i getPos() { return m_pos; }
-};
-
 class Enemy : public Entity
 {
 	public:
@@ -50,7 +36,7 @@ class Enemy : public Entity
 		
 		sf::Clock m_turnTime;
 		
-		std::vector<Square> m_openList;
+		std::vector<sf::Vector2i> m_openList;
 		sf::Vector2i m_dest;
 		sf::Vector2i m_ntdest;
 		

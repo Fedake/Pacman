@@ -131,7 +131,6 @@ void Player::update(int dt)
 	checkDirection();
 	
 	m_pos.x += m_vel.x * (dt/1000000.f);
-	std::cout << m_vel.x * (dt/1000000.f) << std::endl;
 	m_box.left = m_pos.x;
 	for (int h = 0; h < 32; ++h)
 	for (int w = 0; w < 32; ++w)
