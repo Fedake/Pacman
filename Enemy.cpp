@@ -13,81 +13,26 @@ Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, type, 93), m_ma
 	m_box.width = 15;
 	m_box.height = 15;
 	
-	m_vel.y = 0;
-	m_vel.x = 30;
 	
 	m_turned = false;
 	
 	m_turnTime.restart();
 	
-	m_dir = E_RIGHT;
+	m_dest = sf::Vector2i(20, 1);
+	
+	m_onWay = true;
 	
 }
 
 void Enemy::checkDirection()
 {
-	if (m_onWay);
+	if (static_cast<sf::Vector2i>(m_pos) == m_dest)
+		m_onWay = false;
+		
+	if (!m_onWay) setNewDest();
 	
+	aStar();
 	
-	sf::Vector2i pos;
-	pos.x = static_cast<int>((m_pos.x+8) / 16);
-	pos.y = static_cast<int>((m_pos.y+8) / 16);
-	// sprawdz czy mobek moze skrecic
-	if (m_map->isTurn(pos.x, pos.y) && m_turnTime.getElapsedTime().asMilliseconds() > 500)
-	{
-		if (isInside(sf::FloatRect(pos.x*16, pos.y*16, 17, 17)))
-		{
-			bool wayClear = false;
-			
-			switch (m_dir)
-			{
-				case E_LEFT:
-					do
-					{
-						m_dir = rand() % 4;
-						if (isWayClear()) wayClear = true;
-						else wayClear = false;
-					} while (m_dir == E_RIGHT || !wayClear);
-					m_turnTime.restart();
-					break;
-					
-				case E_RIGHT:
-					do
-					{
-						m_dir = rand() % 4;
-						if (isWayClear()) wayClear = true;
-						else wayClear = false;
-					} while (m_dir == E_LEFT || !wayClear);
-					m_turnTime.restart();
-					break;
-						
-				case E_DOWN:
-					do
-					{
-						m_dir = rand() % 4;
-						if (isWayClear()) wayClear = true;
-						else wayClear = false;
-					} while (m_dir == E_UP || !wayClear);
-					m_turnTime.restart();
-					break;
-					
-				case E_UP:
-					do
-					{
-						m_dir = rand() % 4;
-						if (isWayClear()) wayClear = true;
-						else wayClear = false;
-					} while (m_dir == E_DOWN || !wayClear);
-					m_turnTime.restart();
-					break;
-						
-				default:
-					break;
-			}
-		}
-	}
-	
-	// ustaw predkosc
 	switch (m_dir)
 	{
 		case E_LEFT:
@@ -109,8 +54,6 @@ void Enemy::checkDirection()
 		default:
 			break;
 	}
-	m_anim->setMode(m_dir);
-	
 }
 
 void Enemy::update(int dt)
@@ -212,35 +155,84 @@ bool Enemy::isWayClear()
 	return true;
 }
 
-bool Enemy::aStar()
+void Enemy::setNewDest()
 {
-	// choose a random available destination
-	sf::Vector2i dest;
-	
+	std::cout << "newdest" << std::endl;
+	// choose a random available destination	
 	do
 	{
-		dest.x = rand() % 32;
-		dest.y = rand() % 32;
-	} while (m_map->isSolid(dest.x, dest.y));
+		m_dest.x = rand() % 32;
+		m_dest.y = rand() % 32;
+	} while (m_map->isSolid(m_dest.x, m_dest.y));
 	
+	m_onWay = true;
+}
+
+void Enemy::aStar()
+{
+	// get current position
 	sf::Vector2i pos;
 	pos.x = static_cast<int>((m_pos.x+8) / 16);
 	pos.y = static_cast<int>((m_pos.y+8) / 16);
 	
 	// add current square
-	m_openList.push_back(Square(sf::Vector2f(pos.x, pos.y)));
+	//m_openList.push_back(Square(pos));
 	
-	// add all reachable squares and set current square as parent
-	for (int h = pos.y-1; h < pos.y+1; ++h)
-	for (int w = pos.x-1; w < pos.x+1; ++w)
+	if (isInside(sf::FloatRect(pos.x*16, pos.y*16, 16, 16)))
 	{
-		if (w == pos.x && h == pos.y) continue;
+		// add all reachable squares and set current square as parent
+		if (!m_map->isSolid(pos.x-1, pos.y))
+			m_openList.push_back(sf::Vector2i(pos.x-1, pos.y));
+			
+		if (!m_map->isSolid(pos.x+1, pos.y))	
+		m_openList.push_back(sf::Vector2i(pos.x+1, pos.y));
 		
-		m_openList.push_back(Square(sf::Vector2f(w, h), sf::Vector2f(pos.x, pos.y)));
-	}
-	
-	for (int i = 0; i < m_openList.size(); ++i)
-	{
-		float Gx = m_openList[i].getPos().x;
+		if (!m_map->isSolid(pos.x, pos.y-1))
+		m_openList.push_back(sf::Vector2i(pos.x, pos.y-1));
+		
+		if (!m_map->isSolid(pos.x, pos.y+1))
+		m_openList.push_back(sf::Vector2i(pos.x, pos.y+1));
+		
+		sf::Vector2i nextSquare;
+		
+		int prevCost = 9999;
+		
+		for (int i = 0; i < m_openList.size(); ++i)
+		{
+			// cost to move from current to the next square
+			int G = 10;
+			
+			// cost to move from current square to final destination
+			int H = (pos.x - m_dest.x) * 10 + (pos.y - m_dest.y) * 10;
+			
+			int cost = G + H;
+			
+			if (cost < prevCost)
+			{
+				nextSquare = m_openList[i];
+				m_ntdest.x = nextSquare.x;
+				m_ntdest.y = nextSquare.x;
+				
+				prevCost = cost;
+			}
+		}
+		
+		if (pos.x < nextSquare.x)
+			m_dir = E_RIGHT;
+		else if (pos.x > nextSquare.x)
+			m_dir = E_LEFT;
+		if (pos.y < nextSquare.y)
+			m_dir = E_DOWN;
+		else if (pos.y > nextSquare.y)
+			m_dir = E_UP;
+			
+		std::cout << "pos.x: " << pos.x << " | pos.y: " << pos.y << std::endl;
+		std::cout << "nS.x: " << nextSquare.x << " | nS.y: " << nextSquare.y << std::endl;
+		std::cout << "dest.x: " << m_dest.x << " | dest.y: " << m_dest.y << std::endl;
+		std::cout << std::endl;
+		
+		m_gTnT = true;
+			
+		m_openList.clear();
 	}
 }

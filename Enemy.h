@@ -6,20 +6,6 @@
 #include <vector>
 #include "Animation.h"
 
-class Square
-{
-	private:
-		sf::Vector2f m_pos;	
-		sf::Vector2f m_parentSquare;
-		
-	public:
-		Square(sf::Vector2f pos) : m_pos(pos) { }
-		Square(sf::Vector2f pos, sf::Vector2f parentSquare) 
-				: m_pos(pos), m_parentSquare(parentSquare) { }
-				
-		sf::Vector2f getPos() { return m_pos; }
-};
-
 class Enemy : public Entity
 {
 	public:
@@ -33,7 +19,9 @@ class Enemy : public Entity
 		
 		bool isWayClear();
 		
-		bool aStar();
+		void setNewDest();
+		
+		void aStar();
 		
 	private:
 		Map* m_map;
@@ -48,7 +36,10 @@ class Enemy : public Entity
 		
 		sf::Clock m_turnTime;
 		
-		std::vector<Square> m_openList;
+		std::vector<sf::Vector2i> m_openList;
+		sf::Vector2i m_dest;
+		sf::Vector2i m_ntdest;
 		
 		bool m_onWay;
+		bool m_gTnT;
 };
