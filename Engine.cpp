@@ -16,9 +16,6 @@ Engine::Engine() : m_exit(false)
 	m_map->load("map.txt");
 	
 	m_entMgr->addEntity(new Enemy(sf::Vector2f(128, 16), m_map, 1));
-	m_entMgr->addEntity(new Enemy(sf::Vector2f(128, 16), m_map, 1));
-	m_entMgr->addEntity(new Enemy(sf::Vector2f(128, 16), m_map, 1));
-	m_entMgr->addEntity(new Enemy(sf::Vector2f(128, 16), m_map, 1));
 }
 
 Engine::~Engine()

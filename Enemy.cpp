@@ -18,7 +18,8 @@ Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map
 	
 	m_turnTime.restart();
 	
-	m_dest = sf::Vector2i(20, 1);
+	m_dest.pos.x = 20;
+	m_dest.pos.y = 1;
 	
 	m_onWay = true;
 	
@@ -26,8 +27,8 @@ Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map
 
 void Enemy::checkDirection()
 {
-	if (static_cast<sf::Vector2i>(m_pos) == m_dest)
-		m_onWay = false;
+//	if (sf::Vector2i(m_pos.x/16, m_pos.y/16) == m_dest)
+//		m_onWay = false;
 		
 	if (!m_onWay) setNewDest();
 	
@@ -160,9 +161,9 @@ void Enemy::setNewDest()
 	// choose a random available destination
 	do
 	{
-		m_dest.x = rand() % 32;
-		m_dest.y = rand() % 32;
-	} while (m_map->isSolid(m_dest.x, m_dest.y));
+		m_dest.pos.x = rand() % 32;
+		m_dest.pos.y = rand() % 32;
+	} while (m_map->isSolid(m_dest.pos.x, m_dest.pos.y));
 	
 	m_onWay = true;
 }
@@ -174,64 +175,80 @@ void Enemy::aStar()
 	pos.x = static_cast<int>((m_pos.x+8) / 16);
 	pos.y = static_cast<int>((m_pos.y+8) / 16);
 	
-	// add current square
-	//m_openList.push_back(Square(pos));
+	m_openList.clear();
+	m_closedList.clear();
 	
-	if (isInside(sf::FloatRect(pos.x*16, pos.y*16, 16, 16)))
+	Node node; 
+	node.pos = pos; 
+	
+	bool exit = false;
+	while (!exit)
 	{
-		// add all reachable squares and set current square as parent
-		if (!m_map->isSolid(pos.x-1, pos.y))
-			m_openList.push_back(sf::Vector2i(pos.x-1, pos.y));
-			
-		if (!m_map->isSolid(pos.x+1, pos.y))	
-		m_openList.push_back(sf::Vector2i(pos.x+1, pos.y));
+		// get current position
+		sf::Vector2i pos;
+		pos.x = static_cast<int>((m_pos.x+8) / 16);
+		pos.y = static_cast<int>((m_pos.y+8) / 16);
 		
-		if (!m_map->isSolid(pos.x, pos.y-1))
-		m_openList.push_back(sf::Vector2i(pos.x, pos.y-1));
-		
-		if (!m_map->isSolid(pos.x, pos.y+1))
-		m_openList.push_back(sf::Vector2i(pos.x, pos.y+1));
-		
-		sf::Vector2i nextSquare;
-		
-		int prevCost = 9999;
-		
-		for (int i = 0; i < m_openList.size(); ++i)
+		if (isInside(sf::FloatRect(pos.x*16, pos.y*16, 16, 16)))
 		{
-			// cost to move from current to the next square
-			int G = 10;
+			Node neighbour;
+			neighbour.pos.x = pos.x + 1;
+			neighbour.pos.y = pos.y;
+			neighbour.parent = m_openList[0].pos;
+			if (m_map->isSolid(pos.x+1, pos.y) == false && inClosedList(neighbour) == false)
+				m_openList.push_back(node);
 			
-			// cost to move from current square to final destination
-			int H = (pos.x - m_dest.x) * 10 + (pos.y - m_dest.y) * 10;
+			neighbour.pos.x = pos.x - 1;
+			neighbour.pos.y = pos.y;
+			neighbour.parent = m_openList[0].pos;
+			if (m_map->isSolid(pos.x-1, pos.y) == false && inClosedList(neighbour) == false)
+				m_openList.push_back(node);
 			
-			int cost = G + H;
+			neighbour.pos.x = pos.x;
+			neighbour.pos.y = pos.y + 1;
+			neighbour.parent = m_openList[0].pos;
+			if (m_map->isSolid(pos.x, pos.y+1) == false && inClosedList(neighbour) == false)
+				m_openList.push_back(node);
 			
-			if (cost < prevCost)
+			neighbour.pos.x = pos.x;
+			neighbour.pos.y = pos.y - 1;
+			neighbour.parent = m_openList[0].pos;
+			if (m_map->isSolid(pos.x, pos.y-1) == false && inClosedList(neighbour) == false)
+				m_openList.push_back(node);
+			
+			
+			for (int i = 0; i < m_openList.size(); ++i)
 			{
-				nextSquare = m_openList[i];
-				m_ntdest.x = nextSquare.x;
-				m_ntdest.y = nextSquare.x;
+				int G, H;
+			
+				G = 1;
+				H = abs(m_dest.pos.x - m_openList[i].pos.y) + abs(m_dest.pos.y - m_openList[i].pos.y);
 				
-				prevCost = cost;
+				m_openList[i].cost = G + H;
 			}
+			
+			int index = 0;
+			for (int i = 0; i < m_openList.size(); ++i)
+			{
+				if (m_openList[i].cost < m_openList[index].cost)
+				{
+					index = i;
+				}
+			}
+			
+			m_closedList.push_back(m_openList[index]);
+			m_openList.erase(m_openList.begin() + index);
+			
+			node = m_closedList[index];
 		}
-		
-		if (pos.x < nextSquare.x)
-			m_dir = E_RIGHT;
-		else if (pos.x > nextSquare.x)
-			m_dir = E_LEFT;
-		if (pos.y < nextSquare.y)
-			m_dir = E_DOWN;
-		else if (pos.y > nextSquare.y)
-			m_dir = E_UP;
-			
-		std::cout << "pos.x: " << pos.x << " | pos.y: " << pos.y << std::endl;
-		std::cout << "nS.x: " << nextSquare.x << " | nS.y: " << nextSquare.y << std::endl;
-		std::cout << "dest.x: " << m_dest.x << " | dest.y: " << m_dest.y << std::endl;
-		std::cout << std::endl;
-		
-		m_gTnT = true;
-			
-		m_openList.clear();
 	}
+}
+
+bool Enemy::inClosedList(Node node)
+{
+	for (int i = 0; i < m_closedList.size(); ++i)
+	{
+		if (m_closedList[i].pos == node.pos) return true;
+	}
+	return false;
 }

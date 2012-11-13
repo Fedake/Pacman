@@ -6,6 +6,13 @@
 #include <vector>
 #include "Animation.h"
 
+struct Node
+{
+	sf::Vector2i pos;
+	sf::Vector2i parent;
+	int cost;
+};
+
 class Enemy : public Entity
 {
 	public:
@@ -23,6 +30,8 @@ class Enemy : public Entity
 		
 		void aStar();
 		
+		bool inClosedList(Node node);
+		
 	private:
 		Map* m_map;
 		Animation* m_anim;
@@ -36,9 +45,14 @@ class Enemy : public Entity
 		
 		sf::Clock m_turnTime;
 		
-		std::vector<sf::Vector2i> m_openList;
-		sf::Vector2i m_dest;
-		sf::Vector2i m_ntdest;
+		std::vector<Node> m_openList;
+		std::vector<Node> m_closedList;
+		Node m_dest;
+		Node m_ntdest;
+		
+		std::vector<Node> m_path;
+		
+		sf::Vector2i m_lastPos;
 		
 		bool m_onWay;
 		bool m_gTnT;
