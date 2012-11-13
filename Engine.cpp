@@ -15,10 +15,10 @@ Engine::Engine() : m_exit(false)
 	
 	m_map->load("map.txt");
 	
-	m_entMgr->addEntity(new Enemy(sf::Vector2f(128, 16), m_map, 1));
-	m_entMgr->addEntity(new Enemy(sf::Vector2f(128, 16), m_map, 1));
-	m_entMgr->addEntity(new Enemy(sf::Vector2f(128, 16), m_map, 1));
-	m_entMgr->addEntity(new Enemy(sf::Vector2f(128, 16), m_map, 1));
+	m_entMgr->addEntity(new Enemy(sf::Vector2f(256, 240), m_map, 0));
+	m_entMgr->addEntity(new Enemy(sf::Vector2f(272, 240), m_map, 1));
+	m_entMgr->addEntity(new Enemy(sf::Vector2f(288, 240), m_map, 2));
+	m_entMgr->addEntity(new Enemy(sf::Vector2f(294, 240), m_map, 3));
 }
 
 Engine::~Engine()

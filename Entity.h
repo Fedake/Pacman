@@ -21,6 +21,8 @@ class Entity
 		int getType(){return m_type;}
 		
 		bool shouldDie(){return m_die;}
+		
+		void setPos(sf::Vector2f n){m_pos = n;}
 
 	protected:
 		int m_id;	

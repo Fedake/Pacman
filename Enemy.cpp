@@ -3,9 +3,9 @@
 #include <iostream>
 #include <windows.h>
 
-Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map(map)
+Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, type, 93), m_map(map)
 {
-	m_anim = new Animation(ResourceManager::get()->getPlayerTex(), 16, 16, 3, 100);
+	m_anim = new Animation(ResourceManager::get()->getEnemyTex(type), 16, 16, 2, 100);
 	m_anim->play();
 	
 	m_box.left = pos.x;
@@ -109,6 +109,7 @@ void Enemy::checkDirection()
 		default:
 			break;
 	}
+	m_anim->setMode(m_dir);
 	
 }
 
@@ -166,6 +167,7 @@ void Enemy::update(int dt)
 		}
 	}
 	
+	m_anim->update();
 	m_spr = m_anim->getSprite();
 	m_spr.setPosition(sf::Vector2f(m_box.left, m_box.top));
 }

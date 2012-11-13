@@ -9,7 +9,8 @@ class Animation
 		void update();
 		
 		void play(){m_play = true;}
-		void stop(){m_play = false; m_sprite.setTextureRect(sf::IntRect(0, 0, 16, 16));}
+		void stop(){m_play = false; m_sprite.setTextureRect(sf::IntRect(0, 0, m_width, m_height));}
+		void setMode(int n){m_mode = n;}
 		
 		sf::Sprite getSprite(){return m_sprite;}
 		
