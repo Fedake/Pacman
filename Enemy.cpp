@@ -54,6 +54,7 @@ void Enemy::checkDirection()
 		default:
 			break;
 	}
+	m_anim->setMode(m_dir);
 }
 
 void Enemy::update(int dt)
