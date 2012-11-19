@@ -25,8 +25,8 @@ class Map
 		ResourceManager* m_resMgr;
 		EntityManager* m_entMgr;
 		
-		Tile* m_tiles[32][32];
-		int m_solid[32][32];
+		Tile* m_tiles[31][32];
+		int m_solid[31][32];
 };
 
 #endif

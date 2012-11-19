@@ -11,7 +11,7 @@ class Entity
 				
 		virtual void input(sf::Event event) {}
 		virtual void update(int dt) = 0;
-		void render(sf::RenderWindow* win){win->draw(m_spr); win->draw(m_shape);}
+		virtual void render(sf::RenderWindow* win){win->draw(m_spr); win->draw(m_shape);}
 		
 		sf::Vector2f getPos(){return m_pos;}
 		sf::Vector2f getVel(){return m_vel;}
@@ -19,6 +19,7 @@ class Entity
 		
 		int getId(){return m_id;}
 		int getType(){return m_type;}
+		sf::Sprite getSprite(){return m_spr;}
 		
 		bool shouldDie(){return m_die;}
 		

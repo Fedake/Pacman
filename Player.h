@@ -16,6 +16,7 @@ class Player : public Entity
 		
 		void input(sf::Event event);
 		void update(int dt);
+		
 			
 	private:
 		Animation* m_anim;

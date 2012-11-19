@@ -1,7 +1,7 @@
 #include "Engine.h"
 Engine::Engine() : m_exit(false)
 {
-	m_win = new sf::RenderWindow(sf::VideoMode(32*16, 33*16, 32), "Pacman pre-alpha 0.0.1");
+	m_win = new sf::RenderWindow(sf::VideoMode(31*16, 33*16, 32), "Pacman pre-alpha 0.0.1");
 	m_win->setFramerateLimit(60);
 	
 	m_dbg = new Debug();
@@ -9,7 +9,7 @@ Engine::Engine() : m_exit(false)
 	m_entMgr = new EntityManager();
 	
 	m_map = new Map(m_entMgr);
-	m_entMgr->addEntity(new Player(sf::Vector2f(16, 16), m_map, m_entMgr));
+	m_entMgr->addEntity(new Player(sf::Vector2f(15*16, 16), m_map, m_entMgr));
 	
 	srand(time(NULL));
 	

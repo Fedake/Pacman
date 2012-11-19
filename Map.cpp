@@ -26,7 +26,7 @@ bool Map::load(std::string name)
 	
 	int buffer;
 	for(int h = 0; h < 32; h++)
-	for(int w = 0; w < 32; w++)
+	for(int w = 0; w < 31; w++)
 	{
 		file >> buffer;
 		
@@ -58,7 +58,7 @@ bool Map::load(std::string name)
 void Map::render(sf::RenderWindow* win)
 {
 	for(int h = 0; h < 32; h++)
-	for(int w = 0; w < 32; w++)
+	for(int w = 0; w < 31; w++)
 	{
 		m_tiles[w][h]->render(win);
 	}

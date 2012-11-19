@@ -25,15 +25,37 @@ void Portal::update(int dt)
 	
 	if(m_player->getBox().intersects(m_box))
 	{
-		if(m_player->getPos().x > m_pos.x + 8 && m_dir == 3)
-		{
-			int hDiff = m_player->getPos().y - exit->getPos().y;
-			m_player->setPos(sf::Vector2f(exit->getPos().x, exit->getPos().y + hDiff));
+		m_onPortal = true;
+		int yDiff = m_player->getPos().y - m_pos.y;
+		int xDiff = m_player->getPos().x - m_pos.x;
+		
+		if(m_dir == 1)
+		{			
+			m_playerGhost = m_player->getSprite();
+			m_playerGhost.setPosition(exit->getPos() + sf::Vector2f(xDiff + 24, 8 + yDiff));
+			
+			if(m_player->getPos().x < m_pos.x - 8)
+			{
+				m_player->setPos(sf::Vector2f(exit->getPos().x - xDiff, exit->getPos().y + yDiff));
+			}
 		}
-		if(m_player->getPos().x < m_pos.x - 8 && m_dir == 1)
+		else if(m_dir == 3)
 		{
-			int hDiff = m_player->getPos().y - exit->getPos().y;
-			m_player->setPos(sf::Vector2f(exit->getPos().x, exit->getPos().y + hDiff));
+			m_playerGhost = m_player->getSprite();
+			m_playerGhost.setPosition(exit->getPos() + sf::Vector2f(xDiff - 8, 8 + yDiff));
+			
+			if(m_player->getPos().x > m_pos.x + 8)
+			{
+				m_player->setPos(sf::Vector2f(exit->getPos().x - xDiff, exit->getPos().y + yDiff));
+			}
 		}
 	}
+	else m_onPortal = false;
 }	
+
+void Portal::render(sf::RenderWindow* win)
+{
+	win->draw(m_spr);
+	if(m_onPortal) win->draw(m_playerGhost);
+}
+
