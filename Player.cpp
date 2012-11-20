@@ -212,4 +212,3 @@ void Player::kill()
 	m_box.width = 15;
 	m_box.height = 15;
 }
-

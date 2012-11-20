@@ -2,10 +2,11 @@
 
 #include <iostream>
 #include <windows.h>
+#include <conio.h>
 
-Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map(map)
+Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, type, 93), m_map(map)
 {
-	m_anim = new Animation(ResourceManager::get()->getPlayerTex(), 16, 16, 3, 100);
+	m_anim = new Animation(ResourceManager::get()->getEnemyTex(type), 16, 16, 2, 100);
 	m_anim->play();
 	
 	m_box.left = pos.x;
@@ -21,7 +22,7 @@ Enemy::Enemy(sf::Vector2f pos, Map* map, int type) : Entity(pos, 0, type), m_map
 	m_dest.pos.x = 20;
 	m_dest.pos.y = 1;
 	
-	m_onWay = true;
+	m_onWay = false;
 	
 }
 
@@ -55,6 +56,7 @@ void Enemy::checkDirection()
 		default:
 			break;
 	}
+	m_anim->setMode(m_dir);
 }
 
 void Enemy::update(int dt)
@@ -111,6 +113,7 @@ void Enemy::update(int dt)
 		}
 	}
 	
+	m_anim->update();
 	m_spr = m_anim->getSprite();
 	m_spr.setPosition(sf::Vector2f(m_box.left, m_box.top));
 }
@@ -158,13 +161,14 @@ bool Enemy::isWayClear()
 void Enemy::setNewDest()
 {
 	std::cout << "newdest" << std::endl;
-	// choose a random available destination
+	// choose a random available destination	
 	do
 	{
 		m_dest.pos.x = rand() % 32;
 		m_dest.pos.y = rand() % 32;
 	} while (m_map->isSolid(m_dest.pos.x, m_dest.pos.y));
 	
+	std::cout << "m_dest x: " << m_dest.pos.x << "  m_dest x: " << m_dest.pos.y << std::endl;
 	m_onWay = true;
 }
 
@@ -178,12 +182,14 @@ void Enemy::aStar()
 	m_openList.clear();
 	m_closedList.clear();
 	
-	Node node; 
-	node.pos = pos; 
+	Node node;
+	node.pos = pos;
 	
 	bool exit = false;
 	while (!exit)
 	{
+		m_closedList.push_back(node);
+		
 		// get current position
 		sf::Vector2i pos;
 		pos.x = static_cast<int>((m_pos.x+8) / 16);
@@ -192,54 +198,57 @@ void Enemy::aStar()
 		if (isInside(sf::FloatRect(pos.x*16, pos.y*16, 16, 16)))
 		{
 			Node neighbour;
-			neighbour.pos.x = pos.x + 1;
-			neighbour.pos.y = pos.y;
-			neighbour.parent = m_openList[0].pos;
-			if (m_map->isSolid(pos.x+1, pos.y) == false && inClosedList(neighbour) == false)
-				m_openList.push_back(node);
+			neighbour.pos.x = node.pos.x + 1;
+			neighbour.pos.y = node.pos.y;
+			if (m_map->isSolid(neighbour.pos.x, neighbour.pos.y) == false && inClosedList(neighbour) == false)
+				m_openList.push_back(neighbour);
 			
-			neighbour.pos.x = pos.x - 1;
-			neighbour.pos.y = pos.y;
-			neighbour.parent = m_openList[0].pos;
-			if (m_map->isSolid(pos.x-1, pos.y) == false && inClosedList(neighbour) == false)
-				m_openList.push_back(node);
+			neighbour.pos.x = node.pos.x - 1;
+			neighbour.pos.y = node.pos.y;
+			if (m_map->isSolid(neighbour.pos.x, neighbour.pos.y) == false && inClosedList(neighbour) == false)
+				m_openList.push_back(neighbour);
 			
-			neighbour.pos.x = pos.x;
-			neighbour.pos.y = pos.y + 1;
-			neighbour.parent = m_openList[0].pos;
-			if (m_map->isSolid(pos.x, pos.y+1) == false && inClosedList(neighbour) == false)
-				m_openList.push_back(node);
+			neighbour.pos.x = node.pos.x;
+			neighbour.pos.y = node.pos.y + 1;
+			if (m_map->isSolid(neighbour.pos.x, neighbour.pos.y) == false && inClosedList(neighbour) == false)
+				m_openList.push_back(neighbour);
 			
-			neighbour.pos.x = pos.x;
-			neighbour.pos.y = pos.y - 1;
-			neighbour.parent = m_openList[0].pos;
-			if (m_map->isSolid(pos.x, pos.y-1) == false && inClosedList(neighbour) == false)
-				m_openList.push_back(node);
-			
+			neighbour.pos.x = node.pos.x;
+			neighbour.pos.y = node.pos.y - 1;
+			if (m_map->isSolid(neighbour.pos.x, neighbour.pos.y) == false && inClosedList(neighbour) == false)
+				m_openList.push_back(neighbour);
 			
 			for (int i = 0; i < m_openList.size(); ++i)
 			{
-				int G, H;
+				int G = 0;
+				int H = 0;
 			
 				G = 1;
-				H = abs(m_dest.pos.x - m_openList[i].pos.y) + abs(m_dest.pos.y - m_openList[i].pos.y);
+				H = abs(m_dest.pos.x - m_openList[i].pos.x) + abs(m_dest.pos.y - m_openList[i].pos.y);
 				
 				m_openList[i].cost = G + H;
 			}
-			
+				
 			int index = 0;
 			for (int i = 0; i < m_openList.size(); ++i)
 			{
 				if (m_openList[i].cost < m_openList[index].cost)
 				{
-					index = i;
+					if (!inClosedList(m_openList[i]))
+						index = i;
 				}
 			}
 			
 			m_closedList.push_back(m_openList[index]);
-			m_openList.erase(m_openList.begin() + index);
+			m_openList.clear();
 			
 			node = m_closedList[index];
+			
+			if (node.pos == m_dest.pos)
+				exit = true;
+			
+			std::cout << "node: " << node.pos.x << " " << node.pos.y << std::endl;
+			_getch();
 		}
 	}
 }

@@ -3,6 +3,9 @@
 #include <iostream>
 
 #include "Dot.h"
+#include "Pellet.h"
+#include "Portal.h"
+
 #include "EntityManager.h"
 #include "Player.h"
 #include "Entity.h"
@@ -29,9 +32,21 @@ bool Map::load(std::string name)
 		
 		m_tiles[w][h] = new Tile(sf::Vector2f(w*16, h*16), buffer);
 		m_solid[w][h] = buffer;
-		if(buffer != 1)
+		if(buffer == 0)
 		{
 			m_entMgr->addEntity(new Dot(sf::Vector2f(w*16 + 7, h*16 + 7), m_entMgr->getPlayer())); 
+		}
+		if(buffer == 5)
+		{
+			m_entMgr->addEntity(new Pellet(sf::Vector2f(w*16 + 5, h*16 + 5), m_entMgr->getPlayer())); 
+		}
+		if(buffer == 6)
+		{
+			m_entMgr->addEntity(new Portal(sf::Vector2f(w*16, h*16), m_entMgr, 0, 1, 3)); 
+		}
+		if(buffer == 7)
+		{
+			m_entMgr->addEntity(new Portal(sf::Vector2f(w*16, h*16), m_entMgr, 1, 0, 1)); 
 		}
 	}
 	

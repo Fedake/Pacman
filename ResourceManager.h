@@ -8,6 +8,7 @@ class ResourceManager
 	public:
 		sf::Texture* getPlayerTex(){return m_playerTex;}
 		sf::Texture* getEntityTex(int n){return m_entTex[n];}
+		sf::Texture* getEnemyTex(int n){return m_enemyTex[n];}
 		
 		static ResourceManager* get();
 		
@@ -19,6 +20,7 @@ class ResourceManager
 		
 		sf::Texture* m_playerTex;
 		std::vector<sf::Texture*> m_entTex;
+		std::vector<sf::Texture*> m_enemyTex;
 		
 		
 		

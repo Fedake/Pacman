@@ -9,7 +9,6 @@
 struct Node
 {
 	sf::Vector2i pos;
-	sf::Vector2i parent;
 	int cost;
 };
 
