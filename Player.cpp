@@ -133,7 +133,7 @@ void Player::update(int dt)
 	m_pos.x += m_vel.x * (dt/1000000.f);
 	m_box.left = m_pos.x;
 	for (int h = 0; h < 32; ++h)
-	for (int w = 0; w < 32; ++w)
+	for (int w = 0; w < 31; ++w)
 	{
 		if (m_map->isSolid(w, h))
 		{
@@ -159,7 +159,7 @@ void Player::update(int dt)
 	m_pos.y += m_vel.y * (dt/1000000.f);
 	m_box.top = m_pos.y;
 	for (int h = 0; h < 32; ++h)
-	for (int w = 0; w < 32; ++w)
+	for (int w = 0; w < 31; ++w)
 	{
 		if (m_map->isSolid(w, h))
 		{
